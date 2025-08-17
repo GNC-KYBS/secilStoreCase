@@ -1,8 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Seçil Store Case
 
-## Getting Started
+A modern e-commerce collection management application built with Next.js, featuring authentication.
 
-First, run the development server:
+## Core Technologies
+
+- **Framework:** Next.js 15.4.6
+- **Authentication:** NextAuth.js 5.0
+- **State Management:** Zustand
+- **Language:** TypeScript
+- **Styling:** Material-UI (MUI)
+- **Drag & Drop:** @dnd-kit
+- **Container:** Docker
+- **Deployment:** Docker Compose for local deployment
+
+## Features
+
+- 🔐 User authentication with NextAuth.js
+- 📱 Material-UI design
+- 📊 Product catalog with table views
+- 🐳 Docker containerization
+- ⚡ Turbopack for fast development
+
+## Prerequisites
+
+- Node.js 18+
+- Docker and Docker Compose
+- npm, yarn, pnpm, or bun
+
+## Quick Start
+
+### Option 1: Local Development
+
+1. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+2. Run the development server:
 
 ```bash
 npm run dev
@@ -10,27 +49,46 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Option 2: Docker Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Build and run with Docker Compose:
 
-## Learn More
+```bash
+docker-compose up --build
+```
 
-To learn more about Next.js, take a look at the following resources:
+2. Access the application at [http://localhost:3000](http://localhost:3000)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Available Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `npm run dev` - Start development server with Turbopack
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+├── app/                 # Next.js app router
+│   ├── api/            # API routes
+│   ├── collections/    # Collection management pages
+│   └── login/         # Authentication pages
+├── components/         # Reusable UI components
+├── store/             # Zustand state management
+├── types/             # TypeScript type definitions
+└── utils/             # Utility functions
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Environment Setup
+
+Create a `.env` file in the root directory with your NextAuth configuration:
+
+```env
+NEXTAUTH_SECRET=your-secret-key
+NEXTAUTH_URL=http://localhost:3000
+```
