@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000" # Local 3000 portunu container portuna bağla
+    env_file:
+      - .env # Container içinde ortam değişkenlerini kullan
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev # Development için
