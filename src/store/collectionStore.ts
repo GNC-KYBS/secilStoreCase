@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { Collection, Product, Filters } from "@/types/collection";
+import { getSession } from "next-auth/react";
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -30,9 +31,14 @@ const useCollectionStore = create<CollectionState>((set, get) => ({
   fetchCollections: async () => {
     set({ loading: true, error: null });
     try {
+      const session = await getSession();
+      const accessToken = session?.user?.accessToken;
       const res = await fetch(`${backendUrl}/Collection/GetAll`, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
       if (!res.ok) throw new Error("Veri çekilemedi");
       const data = await res.json();

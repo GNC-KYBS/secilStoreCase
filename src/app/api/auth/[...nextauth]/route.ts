@@ -1,65 +1,39 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import refreshAccessToken from "@/utils/auth";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       name: "credentials",
       credentials: {
-        username: { label: "Username", type: "email" },
+        username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         try {
           const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
           const res = await fetch(`${backendUrl}/Auth/Login`, {
             method: "POST",
             body: JSON.stringify({
               username: credentials?.username,
               password: credentials?.password,
             }),
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-              "User-Agent": "NextAuth/1.0",
-            },
+            headers: { "Content-Type": "application/json" },
           });
 
-          console.log("Backend response status:", res.status);
-          console.log(
-            "Backend response headers:",
-            Object.fromEntries(res.headers.entries())
-          );
-
-          if (!res.ok) {
-            const errorText = await res.text();
-            console.error("API Error:", {
-              status: res.status,
-              statusText: res.statusText,
-              body: errorText,
-            });
-
-            // 400 hatası için daha detaylı bilgi
-            if (res.status === 400) {
-              console.error(
-                "Bad Request - Check request format and backend API specification"
-              );
-            }
-
-            return null;
-          }
+          if (!res.ok) return null;
 
           const user = await res.json();
-          //console.log("API Response:", user);
 
-          if (user) {
-            return user;
+          if (user?.data?.accessToken) {
+            if (res.ok && user?.data) {
+              return user.data; // sadece token bilgilerini döndür
+            }
           }
 
           return null;
         } catch (error) {
-          console.error("Auth error:", error);
           return null;
         }
       },
@@ -69,20 +43,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.user = user;
+        return {
+          ...token,
+          accessToken: user.accessToken,
+          refreshToken: user.refreshToken,
+          accessTokenExpires: Date.now() + user.expiresIn * 1000,
+        };
       }
-      return token;
+
+      // Token süresi bitmiş mi kontrol et
+      if (Date.now() < token.accessTokenExpires) {
+        return token;
+      }
+
+      // refreshToken ile yeni accessToken al
+      return refreshAccessToken(token);
     },
-    async session({ session, token }: any) {
-      if (token.user) {
-        session.user = token.user;
-      }
+    async session({ session, token }) {
+      session.user = {
+        ...session.user,
+        accessToken: token.accessToken,
+        refreshToken: token.refreshToken,
+        accessTokenExpires: token.accessTokenExpires,
+      };
+      session.error = token.error;
       return session;
     },
   },
-  pages: {
-    signIn: "/login",
-  },
+  pages: { signIn: "/login" },
   debug: process.env.NODE_ENV === "development",
 });
 

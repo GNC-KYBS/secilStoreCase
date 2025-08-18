@@ -17,8 +17,11 @@ export const mapCollectionsToTable = (
             case "color":
               return `Ürün renk bilgisi şuna eşit: ${capitalize(f.valueName)}`;
             case "size":
-            case "category":
               return `Ürün beden bilgisi şuna eşit: ${capitalize(f.valueName)}`;
+            case "category":
+              return `Ürün kategori bilgisi şuna eşit: ${capitalize(
+                f.valueName
+              )}`;
             case "tag":
               return `Ürün etiket bilgisi şuna eşit: ${capitalize(
                 f.valueName
