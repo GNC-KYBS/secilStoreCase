@@ -9,7 +9,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -18,8 +18,8 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email || !password) {
-      setError("Email ve şifre gerekli");
+    if (!username || !password) {
+      setError("Kullanıcı adı ve şifre gerekli");
       return;
     }
 
@@ -29,12 +29,12 @@ export default function LoginPage() {
     try {
       const result = await signIn("credentials", {
         redirect: false,
-        email: email,
+        username: username,
         password: password,
       });
 
       if (result?.error) {
-        setError("Giriş başarısız. Email veya şifre hatalı.");
+        setError("Giriş başarısız. Kullanıcı adı veya şifre hatalı.");
       } else if (result?.ok) {
         router.push("/collections");
       }
@@ -80,12 +80,12 @@ export default function LoginPage() {
         )}
 
         <TextField
-          id="email"
-          label="Email"
+          id="Username"
+          label="Username"
           type="email"
           variant="outlined"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           fullWidth
           required
           disabled={loading}

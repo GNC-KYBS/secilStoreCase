@@ -6,22 +6,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Credentials({
       name: "credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        username: { label: "Username", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         try {
           const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-          console.log("Attempting login with:", {
-            email: credentials?.email,
-            backendUrl: `${backendUrl}`,
-          });
-
           const res = await fetch(`${backendUrl}/Auth/Login`, {
             method: "POST",
             body: JSON.stringify({
-              email: credentials?.email,
+              username: credentials?.username,
               password: credentials?.password,
             }),
             headers: {
@@ -56,7 +51,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           }
 
           const user = await res.json();
-          console.log("API Response:", user);
+          //console.log("API Response:", user);
 
           if (user) {
             return user;
